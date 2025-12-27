@@ -64,6 +64,9 @@ VIDEO_IDS = ['voGbw_OA6lg',
  'rAod7V_o5_M',
  'tVzVIeY5vXI'
 ]
+def chunk_list(lst, chunk_size=50):
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i:i + chunk_size]
 def fetch_video_metadata(video_ids):
     rows = []
     snapshot_date = datetime.utcnow().date()
