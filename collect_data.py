@@ -65,22 +65,25 @@ VIDEO_IDS = ['voGbw_OA6lg',
  'tVzVIeY5vXI'
 ]
 def fetch_video_metadata(video_ids):
-    request = youtube.videos().list(
-        part="snippet,statistics",
-        id=",".join(video_ids)
-    )
-    response = request.execute()
     rows = []
     snapshot_date = datetime.utcnow().date()
-    for item in response.get("items", []):
-        rows.append({
-            "video_id": item["id"],
-            "snapshot_date": snapshot_date,
-            "title": item["snippet"]["title"],
-            "views": int(item["statistics"].get("viewCount", 0)),
-            "likes": int(item["statistics"].get("likeCount", 0)),
-            "comments": int(item["statistics"].get("commentCount", 0))
-        })
+
+    for batch in chunk_list(video_ids, 50):
+        request = youtube.videos().list(
+            part="snippet,statistics",
+            id=",".join(batch)
+        )
+        response = request.execute()
+
+        for item in response.get("items", []):
+            rows.append({
+                "video_id": item["id"],
+                "snapshot_date": snapshot_date,
+                "title": item["snippet"]["title"],
+                "views": int(item["statistics"].get("viewCount", 0)),
+                "likes": int(item["statistics"].get("likeCount", 0)),
+                "comments": int(item["statistics"].get("commentCount", 0))
+            })
     return pd.DataFrame(rows)
 FILE_PATH = "youtube_title_snapshots.csv"
 df_today = fetch_video_metadata(VIDEO_IDS)
