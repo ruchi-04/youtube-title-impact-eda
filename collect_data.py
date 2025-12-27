@@ -7,8 +7,7 @@ API_KEY = os.environ["YOUTUBE_API_KEY"]
 
 youtube = build("youtube", "v3", developerKey=API_KEY)
 
-VIDEO_IDS = [
-['voGbw_OA6lg',
+VIDEO_IDS = ['voGbw_OA6lg',
  'M-NEKccJ5B4',
  'wEf_5sWHhsA',
  '6m3S5gUSFoI',
